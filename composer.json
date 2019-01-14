@@ -1,15 +1,11 @@
 {
-    "name": "devshop/composer-template",
-    "description": "Project template for Drupal 8 projects with composer, ready to run on Aegir & DevShop",
+    "name": "ForsythInstitute/MyMouthMyNose.org",
+    "description": "Project for the MyMouthMyNose Forsyth Institute Portal",
     "type": "project",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
-            "name": "Jon Pugh",
-            "role": "Lead Developer"
-        },
-        {
-            "name": "Jacinto Capote",
+            "name": "Kevin Baringer",
             "role": "Lead Developer"
         }
     ],

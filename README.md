@@ -1,3 +1,7 @@
+# MyMouth MyNose Project for Forsyth Institute
+# Contact Kevin Baringer for more info
+#
+
 # Composer template for Drupal projects on Aegir & DevShop.
 
 This project template provides a starter kit for managing your site
