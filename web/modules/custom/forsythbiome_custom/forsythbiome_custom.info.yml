@@ -1,0 +1,7 @@
+name: 'Forsythbiome Custom'
+type: module
+description: 'Custom functionality for the Forsyth MyMouth,MyNose Project'
+core: 8.x
+package: 'Custom'
+dependencies:
+  - block

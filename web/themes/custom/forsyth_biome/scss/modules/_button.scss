@@ -1,0 +1,25 @@
+// Forsyth Biome Button Styles
+//
+// -- need to uncomment line in forsyth_biome.scss:
+// ---- @import 'modules/button';
+
+.button {
+  border-bottom: 1px solid $button-background-hover;
+  border-left: 0;
+  border-right: 1px solid $button-background-hover;
+  border-top: 0;
+  //font-family: $forsyth-ubuntu-font-family;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+
+  &.clear {
+    color: $white;
+  }
+
+  &:hover {
+    border-bottom: 1px solid $button-background;
+    border-right: 1px solid $button-background;
+    color: $button-color-hover;
+  }
+}

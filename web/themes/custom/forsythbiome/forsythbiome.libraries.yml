@@ -1,0 +1,15 @@
+global:
+  version: VERSION
+  css:
+    base:
+      css/forsythbiome.css: {}
+  js:
+    js/forsythbiome.js: {}
+fonts:
+  license:
+    name: Ubuntu Font License
+    url: http://font.ubuntu.com/ufl/
+  css:
+    theme:
+      //fonts.googleapis.com/css?family=Ubuntu+Condensed: { type: external }
+      //fonts.googleapis.com/css?family=Ubuntu: { type: external }

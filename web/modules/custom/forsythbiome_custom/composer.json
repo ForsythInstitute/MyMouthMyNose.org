@@ -1,0 +1,14 @@
+{
+  "name": "drupal/forsythbiome_custom",
+  "type": "drupal-module",
+  "description": "Custom functionality for the Forsyth MyMouth,MyNose Project",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/forsythbiome_custom",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/forsythbiome_custom",
+    "source": "http://cgit.drupalcode.org/forsythbiome_custom"
+  },
+  "require": { }
+}

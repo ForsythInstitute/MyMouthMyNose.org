@@ -1,0 +1,78 @@
+// Non-modular or client styles for the .top-banner region.
+
+.top-banner {
+  min-height: 90px;
+  width: 100%;
+
+  .top-banner-wrapper {
+    position: relative;
+  }
+
+  @include breakpoint(medium up) {
+    .overlay {
+      //background-color: rgba(55, 155, 55, .5);
+      background-image: linear-gradient(to right, $black, transparent);
+      bottom: 0;
+      left: 0;
+      opacity: .8;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 1;
+    }
+  }
+
+  @include breakpoint(medium up) {
+    .top-banner-content {
+      color: $white;
+      font-family: $forsyth-ubuntu-font-family;
+      position: absolute;
+      top: 25%;
+      width: 100%;
+      z-index: 99;
+    }
+  }
+  @include breakpoint(small only) {
+    position: relative;
+  }
+
+  @include breakpoint(medium up) {
+    .full-width {
+      width: 100%;
+    }
+  }
+
+  .top-banner-cta {
+    h2 {
+      font-family: $forsyth-ubuntu-font-family;
+      line-height: 1.2;
+      padding-right: 10px;
+    }
+  }
+
+  .top-banner-btn {
+    a {
+      display: block;
+      margin: 0 auto;
+      width: 40%;
+    }
+  }
+
+}
+
+@include breakpoint(small only) {
+  .top-banner {
+    margin-top: 120px;
+
+    .full-width {
+      //float: right;
+      max-width: none;
+      overflow: hidden;
+      width: 130%;
+    }
+
+    //.top-banner-content {
+    //
+    //}
+  }
+}

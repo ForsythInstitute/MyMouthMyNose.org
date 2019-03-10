@@ -1,0 +1,31 @@
+// Non-modular or client styles for .l-header region.
+
+header {
+  &.biome-header {
+    background-color: $forsyth-red-transp;
+    font-size: initial;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 99;
+    @include breakpoint(medium up) {
+      padding: 20px 0;
+    }
+    @include breakpoint(small only) {
+      padding: 12px 0 8px;
+    }
+
+    .button-group {
+      @include breakpoint(medium up) {
+        float: right;
+      }
+      @include breakpoint(small only) {
+        border-top: 1px solid $white;
+        justify-content: center;
+        margin-bottom: 0;
+        padding-top: 8px;
+      }
+    }
+  }
+
+}

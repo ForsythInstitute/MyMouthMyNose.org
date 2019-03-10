@@ -1,0 +1,65 @@
+{#
+/**
+ * @file
+ * Default theme implementation to present all user data.
+ *
+ * This template is used when viewing a registered user's page,
+ * e.g., example.com/user/123. 123 being the user's ID.
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ *   print a subset such as 'content.field_example'. Fields attached to a user
+ *   such as 'user_picture' are available as 'content.user_picture'.
+ * - attributes: HTML attributes for the container element.
+ * - user: A Drupal User entity.
+ *
+ * @see template_preprocess_user()
+ *
+ * @ingroup themeable
+ */
+#}
+
+<h3>Hi There!</h3>
+{#{{ kint(roles) }}#}
+{#{{ kint(userid) }}#}
+{#{{ kint(webform_submissions) }}#}
+{#{{ kint( elements ) }}#}
+
+<article{{ attributes }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</article>
+
+<section class="signup-form-link">
+  <div class="signup-btn">
+    <a class="button" href="/form/mnm-study-adult">Adult Participant Consent Form & Questionnaire</a>
+  </div>
+  <div class="signup-btn">
+    <a class="button" href="/form/mnm-study-child">Child Participant Consent Form & Questionnaire</a>
+  </div>
+
+</section>
+
+<section class="participant-table">
+  <h3>Participants Markup Goes Here.</h3>
+
+  {#{% if kevintest %}#}
+    {#<p>kevintest var exists.</p>#}
+  {#{% endif %}#}
+
+  {% if participants_markup %}
+    <h3>We have Participants Markup!</h3>
+    {{ participants_markup|raw }}
+  {% endif %}
+
+  {% if link_renderable_array %}
+    {{ link_renderable_array }}
+  {% endif %}
+
+  {#{% if studynumtestform %}#}
+    {#<h3>StuyNumForm</h3>#}
+    {#{{ studynumtestform }}#}
+  {#{% endif %}#}
+
+</section>

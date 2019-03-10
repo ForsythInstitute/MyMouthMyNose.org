@@ -1,0 +1,305 @@
+<?php
+
+/**
+ * @file
+ * Contains forsythbiome_custom.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\user\Entity\User;
+use Drupal\profile\Entity\Profile;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\AppendCommand;
+//use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Url;
+use Symfony\Component\HttpFoundation\Response;
+
+
+//$user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+//$user = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+//kint($user);
+//var_dump($user);
+
+
+/**
+ * Implements hook_help().
+ */
+function forsythbiome_custom_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the forsythbiome_custom module.
+    case 'help.page.forsythbiome_custom':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom functionality for the Forsyth MyMouth,MyNose Project') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/*
+ * Allow adding roles in user registration form
+ */
+function forsythbiome_custom_form_alter(&$form, &$form_state, $form_id) {
+  //unset($form['account']['roles']['#options']['administrator']);
+  //$form['account']['roles']['#access'] = TRUE;
+
+//  if($form_id == "user_register_form") {
+//
+//  }
+
+
+}
+
+/**
+ * Implements hook_theme().
+ */
+function forsythbiome_custom_theme() {
+  return [
+    'forsythbiome_custom' => [
+      'render element' => 'children',
+    ],
+  ];
+}
+
+/**
+ * Get a query result object containing a list of all webform submissions by user
+ *
+ * @param $uid user id - if NULL then use the current user
+ * @return mixed
+ */
+function forsythbiome_custom_getSubmissions($uid = NULL) {
+
+  $query = \Drupal::entityQuery('webform_submission')
+      ->condition('uid', $uid);
+  $result = $query->execute();
+
+  return $result;
+}
+
+/**
+ * Get info from the current User entity
+ * See: https://drupal.stackexchange.com/questions/184498/how-do-i-get-the-user-id-for-the-currently-logged-in-user
+ */
+function getCurrentUserInfo() {
+  // Load the current user.
+  $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+
+  if ($user) {
+
+    // retrieve field data from that user
+    $website = $user->get('field_website')->value;
+    $body = $user->get('body')->value;
+
+    $email = $user->get('mail')->value;
+    $name = $user->get('name')->value;
+    $uid= $user->get('uid')->value;
+
+  }
+
+}
+
+/**
+ * @param array $build
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ * @param \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display
+ * @param $view_mode
+ */
+function forsythbiome_custom_entity_view(array &$build,
+                                         \Drupal\Core\Entity\EntityInterface $entity,
+                                         \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display,
+                                         $view_mode) {
+
+//  var_dump($view_mode);
+//  var_dump($display);
+//  if ()
+//  $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
+}
+
+
+/**
+ * Add a Study Number value to a webform submission
+ * @param $sid - ID number for a Webform submission
+ */
+function addStudyNum($sid) {
+// Try using \Drupal\webform\WebformSubmissionInterface::getData();
+//   and \Drupal\webform\WebformSubmissionInterface::setData($data);
+
+// Load submission using sid.
+  /** @var \Drupal\webform\WebformSubmissionInterface $webform_submission */
+  $webform_submission = \Drupal\webform\entity\WebformSubmission::load($sid);
+
+// Get submission data.
+  $data = $webform_submission->getData();
+
+// @TODO Verify that the submission is for the correct Webform
+
+// Change submission data.
+  $data['element_key'] = 'custom_element_value';
+
+// Set submission data.
+  $webform_submission->setData($data);
+
+// Save submission.
+  $webform_submission->save();
+
+}
+
+/**
+ * Search a webform for submissions with certain values in specified fields
+ *
+ * @param $web_form_id
+ * @param $data_key
+ * @param $value
+ * @return array
+ */
+function forsythbiome_custom_webform_submission_by_data_key($web_form_id, $data_key, $value) {
+  $database = \Drupal::service('database');
+  $select = $database->select('webform_submission_data', 'wsd')
+      ->fields('wsd', array('sid'))
+      ->condition('wsd.webform_id', $web_form_id, '=')
+      ->condition('wsd.name', $data_key, '=')
+      ->condition('wsd.value', $value, '=');
+  $executed = $select->execute();
+  // Get all the results.
+  $results = $executed->fetchAll(\PDO::FETCH_ASSOC);
+  if (count($results) == 1) {
+    $results = reset($results);
+  }
+  return $results;
+}
+
+/**
+ * Demonstrates a clickable AJAX-enabled link using the 'use-ajax' class.
+ *
+ * Because of the 'use-ajax' class applied here, the link submission is done
+ * without a page refresh.
+ *
+ * When using the AJAX framework outside the context of a form or a renderable
+ * array of type 'link', you have to include ajax.js explicitly.
+ *
+ * @return array
+ *   Form API array.
+ *
+ * @ingroup ajax_example
+ */
+function renderLinkRenderableArray() {
+  $build['my_div'] = [
+      '#markup' => t('
+The link below has been rendered as an element with the #ajax property, so if
+javascript is enabled, ajax.js will try to submit it via an AJAX call instead
+of a normal page load. The URL also contains the "/nojs/" magic string, which
+is stripped if javascript is enabled, allowing the server code to tell by the
+URL whether JS was enabled or not, letting it do different things based on that.'),
+  ];
+  // We'll add a nice border element for our demo.
+  $build['ajax_link'] = [
+      '#type' => 'details',
+      '#title' => t('This is the AJAX link'),
+      '#open' => TRUE,
+  ];
+  // We build the AJAX link.
+  $build['ajax_link']['link'] = [
+      '#type' => 'link',
+      '#title' => t('Click me'),
+    // We have to ensure that Drupal's Ajax system is loaded.
+      '#attached' => ['library' => ['core/drupal.ajax']],
+    // We add the 'use-ajax' class so that Drupal's AJAX system can spring
+    // into action.
+      '#attributes' => ['class' => ['use-ajax']],
+    // The URL for this link element is the callback. In our case, it's route
+    // ajax_example.ajax_link_callback, which maps to ajaxLinkCallback()
+    // below. The route has a /{nojs} section, which is how the callback can
+    // know whether the request was made by AJAX or some other means where
+    // JavaScript won't be able to handle the result. If the {nojs} part of
+    // the path is replaced with 'ajax', then the request was made by AJAX.
+      '#url' => Url::fromRoute('ajax_example.ajax_link_callback', ['nojs' => 'ajax']),
+  ];
+  // We provide a DIV that AJAX can append some text into.
+  $build['ajax_link']['destination'] = [
+      '#type' => 'container',
+      '#attributes' => ['id' => ['ajax-example-destination-div']],
+  ];
+  return $build;
+}
+
+/**
+ * Callback for link example.
+ *
+ * Takes different logic paths based on whether Javascript was enabled.
+ * If $type == 'ajax', it tells this function that ajax.js has rewritten
+ * the URL and thus we are doing an AJAX and can return an array of commands.
+ *
+ * @param string $nojs
+ *   Either 'ajax' or 'nojs. Type is simply the normal URL argument to this
+ *   URL.
+ *
+ * @return string|array
+ *   If $type == 'ajax', returns an array of AJAX Commands.
+ *   Otherwise, just returns the content, which will end up being a page.
+ */
+function ajaxLinkCallback($nojs = 'ajax') {
+  // Determine whether the request is coming from AJAX or not.
+  if ($nojs == 'ajax') {
+    $output = t("This is some content delivered via AJAX");
+    $response = new AjaxResponse();
+    $response->addCommand(new AppendCommand('#ajax-example-destination-div', $output));
+
+    // See ajax_example_advanced.inc for more details on the available
+    // commands and how to use them.
+    // $page = array('#type' => 'ajax', '#commands' => $commands);
+    // ajax_deliver($response);
+    return $response;
+  }
+  $response = new Response(t("This is some content delivered via a page load."));
+  return $response;
+}
+
+///**
+// *  Get Webform Submission Study Number value
+// */
+//function _getParticipantWebformStudyNumber($sid) {
+//
+//  $submission = \Drupal\webform\WebformSubmissionInterface::load($sid);
+//  $subdata = $submission->getData();
+//  $studynumset = (isset($subdata['study_number']) && !empty($subdata['study_number'])) ? TRUE : FALSE;
+//  $studynum = $studynumset ? $subdata['study_number'] : null;
+//
+//  return $studynum;
+//}
+
+/*
+ *
+ * When user completes registration form they are logged-in immediately and redirected to ...
+ *
+ *   IF they did not check "myself" or a number of children then show popup warning - if they decline to sign up then cancel the account.
+ *
+ *   IF they selected 'myself' then redirect to Adult Webform
+ *
+ *   IF they DID NOT select 'myself' but set a number of children greater than 0 then redirect to Child Webform
+ *
+ *  -----
+ *
+ * When user submits webform check User Account 'signup' fields & number of webform submissions for this User Account:
+ *
+ *   IF only 'myself' was checked and Adult Webform has been submitted then redirect to THANK YOU page
+ *
+ *   IF 'myself' was checked and number of children = number of Child Webform submissions then redirect to THANK YOU page
+ *
+ *   IF number of children is less than number of Child Webform submissions then redirect to Child Webform
+ *
+ *  -----
+ *
+ *
+ * Components/Functions needed:
+ *
+ *
+ * Submit Handler for User Registration Form
+ *
+ * Submit Handler for Webforms
+ *
+ *
+ *
+ *
+ *
+ */

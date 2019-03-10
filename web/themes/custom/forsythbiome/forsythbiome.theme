@@ -1,0 +1,504 @@
+<?php
+
+use \Drupal\user\Entity\Role;
+use \Drupal\Core\Entity;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Form\FormInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+
+// Add your custom theme override functions here.
+
+/**
+ * Implements hook_preprocess_block()
+ */
+function forsythbiome_preprocess_block(&$variables) {
+}
+
+/**
+ * Implements template_preprocess_field().
+ */
+function forsythbiome_preprocess_field(&$variables, $hook) {
+}
+
+/**
+ * Implements template_preprocess_html().
+ *
+ * Adds additional classes
+ */
+function forsythbiome_preprocess_html(&$variables) {
+}
+
+/**
+ * Implements template_preprocess_node
+ *
+ * Add template suggestions and classes
+ */
+function forsythbiome_preprocess_node(&$variables) {
+}
+
+/**
+ * Implements template_preprocess_page
+ *
+ * Add convenience variables and template suggestions
+ */
+function forsythbiome_preprocess_page(&$variables) {
+
+  $current_route = \Drupal::routeMatch();
+  $route_request = $current_route->getRouteObject();
+  $path_args = explode('/', $route_request->getPath());
+  $route_name = $current_route->getRouteName();
+
+  $variables['route-name'] = $route_name;
+
+  $site_config = \Drupal::config('system.site');
+  $variables['site_name'] = $site_config->get('name');
+  $variables['site_slogan'] = $site_config->get('slogan');
+
+  //Modify Site Name for header
+  if ($variables['site_name'] == 'MyMouthMyNose' && $variables['front_page']) {
+    $variables['site_text_logo'] = '<div class="site-name"><a href="'.$variables['front_page']
+        .'" title="MyMouthMyNose Home">'
+        .'<span class="logo-bold">MY</span>MOUTH, '
+        .'<span class="logo-bold">MY</span>NOSE'
+        .'</a></div>';
+  }
+
+//  $variables = _buildParticipantTable($variables);
+
+//  // USER PAGE for PARTICIPANTS
+//  if ($route_name == 'entity.user.canonical') {
+//
+//    //Which Users page are we on?
+//    $userpageowner = _getProfilePageUser();
+////    kint($userpageowner->id());
+//
+//    //Which User is currently logged in?  (admin or participant?)
+//    $user = \Drupal::currentUser();
+//    $userentity = \Drupal\user\Entity\User::load($user->id());
+//    $roles = $user->getRoles();
+//    $variables['roles'] = $roles;
+//    $variables['userid'] = $user->id();
+//    $variables['ownpage'] = $user->id() == $userpageowner->id() ? true : false;
+//
+//    //Make sure the user is authenticated as an Admin
+//    // -- OR -- is logged-in as a 'Participant' and is viewing their own User Page
+//    if (($user->isAuthenticated() && in_array('administrator', $roles))
+//      || (in_array('participant', $roles) && $variables['ownpage'])) {
+//
+//      //Instantiate the $participants array
+//      $participants = array();
+//      $p_arr_fields = array('participant' => null, 'sid' => null, 'name' => null, 'consent' => null, 'studynum' => null);
+//
+//      // Load Profile entity by User ID
+//      $profile_entity = \Drupal::entityTypeManager()->getStorage('profile')->loadByProperties(['uid' => $userpageowner->id()]);
+//
+//      if (isset($profile_entity) && count($profile_entity) >0) {
+//        foreach ($profile_entity as $p_entity) {
+////          kint($p_entity);
+//
+//          //Make sure we're only working with "Participant Info" profiles
+//          //$profile_type = $p_entity->type->get(0)->get('target_id'); // Nope, it's protected
+//          $profile_type = $p_entity->type->target_id;
+//          if (isset($profile_type) && $profile_type == 'participant_info') {
+//
+//            //Get the 'field_signup_myself' value
+//            $myselfval = $p_entity->get('field_signup_myself')->value;
+//            $variables['signup_adult'] = $myselfval;
+//            $participants[0] = $p_arr_fields;
+//            $participants[0]['participant'] = $myselfval ? 'adult' : false;
+//
+//            //Get the 'field_signup_children' value
+//            $numchildrenval = $p_entity->get('field_signup_num_children')->value;
+//            $variables['signup_num_children'] = $numchildrenval;
+//            if ($numchildrenval > 0) {
+//              for ($i = 1; $i <= $numchildrenval; $i++) {
+//                $participants[$i] = $p_arr_fields;
+//                $participants[$i]['participant'] = 'child';
+//              }
+//            }
+//          }
+//        }
+//      }
+//
+//      // Query the webform_submissions table to get all sids for the user
+//      $subsstorage = \Drupal::entityTypeManager()->getStorage('webform_submission');
+//      $variables['submissions_exist'] = $subsstorage->hasData();
+//
+//      //Get webform submissions for current userpageowner
+//      $user_submissions = $subsstorage->loadByProperties(['uid' => $userpageowner->id()]);
+//      $variables['user_submissions'] = $user_submissions;
+//
+//      //Loop through submissions and check the following:
+//      //  A) Do they match the "sign-up" fields ("myself" & "num_children")
+//      //  B) Do they have a 'Study Number' assigned yet
+//
+//      if (isset($user_submissions) && is_array($user_submissions) ){
+//        foreach ($user_submissions as $submission) {
+//          //kint($participants);
+//          //kint($submission->getData());
+//          $webformid = $submission->webform_id->target_id;
+//          $sid = $submission->sid->value;
+//          $subdata = $submission->getData();
+//          //Determine if Consent has been given in the form of a digital signature
+//          $sigconsent = $subdata['digital_signature_acceptance'];
+//          $signature = $subdata['digital_signature'];
+//          $consent = (isset($sigconsent) && $sigconsent == 1 && isset($signature)) ? TRUE : FALSE;
+//          //Determine if a Study Number has been set
+//          $studynumset = (isset($subdata['study_number']) && !empty($subdata['study_number'])) ? TRUE : FALSE;
+//
+//          if ($webformid == 'mnm_study_adult' && empty($participants[0]['sid'])) {
+//            //This is a new Adult submission
+//            $participants[0]['sid'] = $sid;
+//            $participants[0]['name'] = $subdata['participant_name']['first'] . ' ' .$subdata['participant_name']['last'];;
+//            $participants[0]['consent'] = $consent;
+//            $participants[0]['studynum'] = $studynumset ? $subdata['study_number'] : null;
+//          } elseif ($webformid == 'mnm_study_adult' && !empty($participants[0]['sid'])) {
+//            //The Adult participant has already submitted a webform - no more are allowed
+//            \Drupal::messenger()->addWarning('Detected multiple Adult form submissions. Only the first Adult submission will be accepted for this account.');
+//          } elseif ($webformid == 'mnm_study_child') {
+//            //This is a Child Study
+//            //get the next available child slot in the $participants array
+//            foreach ($participants as $index => $p) {
+//              if ($p['participant'] == 'child' && empty($p['sid'])) {
+//                //There is a child slot that has not been set with a webform submission yet - add it here
+//                $participants[$index]['sid'] = $sid;
+//                $participants[$index]['name'] = $subdata['participant_name']['first'] .' ' .$subdata['participant_name']['last'];;
+//                $participants[$index]['consent'] = $consent;
+//                $participants[$index]['studynum'] = $studynumset ? $subdata['study_number'] : null;
+//                break;
+//              }
+//            }
+//          }
+//
+//        } //end foreach
+//      }
+//
+//      //For each expected participant show the following:
+//      //  - "myself" = is there an Adult webform submission? If so, show the SID & Name.
+//      //  - "child_num" = show a row for each number, loop through submissions to get Child Webforms
+//
+//      //Populate the StudyNumForm with a field for each "Sign-Up" participant expected.
+//
+//      $variables['participants_array'] = $participants;
+//
+//      //Render the Participants Array into markup
+//      $variables['content']['participants_markup'] = _participantsMarkup($participants);
+//
+//    }
+//  }  //END -- USER PAGE for PARTICIPANTS
+
+  //TEST STATUS MESSAGES
+//  \Drupal::messenger()->addMessage('TEST CUSTOM STATUS MESSAGE.', 'custom');
+//  \Drupal::messenger()->addError('TEST ERROR MESSAGE.');
+
+  // Inject a boolean value based on the current message queue.
+  //NOTE: drupal_get_messages DEPRECATED AFTER 8.5, see: https://www.drupal.org/node/2774931
+  //$variables['available_messages'] = !empty(drupal_get_messages(NULL, FALSE));
+  $variables['available_messages'] = !empty(\Drupal::messenger()->all());
+
+//  kint($variables);
+
+}
+
+/**
+ * Implements template_preprocess_views_view().
+ */
+function forsythbiome_preprocess_views_view(&$variables) {}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function forsythbiome_theme_suggestions_user_alter(array &$suggestions, array &$variables) {
+  $request = \Drupal::routeMatch()->getRouteObject();
+  $path_args = explode('/', $request->getPath());
+  $user = \Drupal::currentUser();
+  $roles = $user->getRoles();
+
+  //See if the visitor is on a user page and is logged-in as a Participant or Admin user
+  if ($user->isAuthenticated() && in_array('user', $path_args) && (in_array('participant', $roles) || in_array('administrator', $roles))) {
+    //determine if the page we're on is a Participant User page
+    if (in_array('participant', _getProfilePageUser()->getRoles())) {
+      // Add theme template for Participant user profile page
+    $suggestions[] = 'user__participant';
+    }
+  }
+}
+
+/**
+ * Implements template_preprocess_user().
+ */
+function forsythbiome_preprocess_user(&$variables) {
+
+  //Verify that the forsythbiome_custom module is enabled
+  $moduleHandler = \Drupal::service('module_handler');
+  if ($moduleHandler->moduleExists('forsythbiome_custom')){
+
+    $variables = _buildParticipantTable($variables);
+
+    $variables['link_renderable_array'] = renderLinkRenderableArray();
+
+    //Add form for testing
+    if (class_exists('Drupal\forsythbiome_custom\Form\StudyNumTestForm')) {
+      $form = \Drupal::formBuilder()->getForm('Drupal\forsythbiome_custom\Form\StudyNumTestForm');
+      $variables['studynumtestform'] = $form;
+    }
+  }
+}
+
+/**
+ * Get the User object for a User Profile page (not the currently logged-in user)
+ */
+function _getProfilePageUser() {
+
+  $current_path = \Drupal::service('path.current')->getPath();
+  $exploded_path= explode('/',$current_path);
+  $uid=end($exploded_path);
+
+  if (prev($exploded_path) =='user') {
+    $user = \Drupal\user\Entity\User::load($uid);
+  } else {
+    $user = false;
+  }
+  return $user;
+}
+
+/**
+ *  Take an array of Participants data and return markup to render in the template
+ */
+function _participantsMarkup($participants) {
+
+  $markup_data = null;
+
+  //Make sure the participants array is kosher
+  if (isset($participants)) {
+//      array_key_exists('participant', $participants) &&
+//      array_key_exists('sid', $participants) &&
+//      array_key_exists('name', $participants) &&
+//      array_key_exists('consent', $participants) &&
+//      array_key_exists('studynum', $participants)) {
+    //Structure is good, carry on
+
+    /*
+     * This structure will be used in Twig:
+     *
+     * see example: https://stackoverflow.com/questions/36701927/print-an-array-in-twig
+     *
+       {% for num, row in participants %}
+         <div{{ item.attributes.addClass('grid-x grid-margin-x') }}>
+         {% for key, value in row %}
+           <div{{ item.attributes.addClass('cell small-12 medium-8') }}>
+
+         {% endfor %}
+       {% endfor %}
+     */
+
+    $markup_table_start = '<table>';
+    $markup_table_end = '</table>';
+    $markup_header = '<tr>'
+        .'<td>#</td>'
+        .'<td>Participant</td>'
+        .'<td>Form ID</td>'
+        .'<td>Name</td>'
+        .'<td>Consent</td>'
+        .'<td>Study Number</td>'
+        .'</tr>';
+
+    $markup_data = $markup_table_start . $markup_header;
+
+//    foreach ($participants as $num => $row) {
+//
+//      //call the StudyNumForm build function with the current sid param
+//      $form = \Drupal::formBuilder()->getForm('Drupal\forsythbiome_custom\Form\StudyNumForm', $row['sid']);
+//      $form_markup = \Drupal::service('renderer')->renderRoot($form);
+//
+//      $markup_row = '<tr>'
+//          .'<td>'.$num.'</td>'
+//          .'<td>'.$row['participant'].'</td>'
+//          .'<td>'.$row['sid'].'</td>'
+//          .'<td>'.$row['name'].'</td>'
+//          .'<td>'.$row['consent'].'</td>'
+//          .'<td>'
+////      <input type="text" name="studynum" value="' .$row['studynum'] .'"></td></tr>';
+//          .$form_markup
+//          .'</td>'
+//          .'</tr>';
+//
+//      //@TODO
+//      // 1) create a simple form to add/update the StudyNum
+//      // 2) Make the form use AJAX to do the update without refreshing the page
+//      // 3) Figure out how to render a different copy of the form for each participant (new form_id?)
+//      // 4) Render the forms for each Participant record
+//
+//      $markup_data .= $markup_row;
+//    }
+
+    $markup_data .= $markup_table_end;
+
+      } else {
+    //Bad Participants array structure
+    \Drupal::logger('forsythbiome_custom')->error("Participants Array cannot be rendered. Invalid Structure.");
+  }
+
+
+  $form = \Drupal::formBuilder()->getForm('Drupal\forsythbiome_custom\Form\StudyNumForm', $participants);
+
+  //return $markup_data;
+  return $form;
+
+}
+
+/**
+ * Build the Participants table output and store in $variables
+ */
+function _buildParticipantTable ($variables) {
+
+  $current_route = \Drupal::routeMatch();
+  $route_request = $current_route->getRouteObject();
+  $path_args = explode('/', $route_request->getPath());
+  $route_name = $current_route->getRouteName();
+
+  $variables['route-name'] = $route_name;
+
+  // USER PAGE for PARTICIPANTS
+  if ($route_name == 'entity.user.canonical') {
+
+    //Which Users page are we on?
+    $userpageowner = _getProfilePageUser();
+//    kint($userpageowner->id());
+
+    //Which User is currently logged in?  (admin or participant?)
+    $user = \Drupal::currentUser();
+    $userentity = \Drupal\user\Entity\User::load($user->id());
+    $roles = $user->getRoles();
+    $variables['roles'] = $roles;
+    $variables['userid'] = $user->id();
+    $variables['ownpage'] = $user->id() == $userpageowner->id() ? true : false;
+
+    //Make sure the user is authenticated as an Admin
+    // -- OR -- is logged-in as a 'Participant' and is viewing their own User Page
+    if (($user->isAuthenticated() && in_array('administrator', $roles))
+        || (in_array('participant', $roles) && $variables['ownpage'])) {
+
+      //Instantiate the $participants array
+      $participants = array();
+      $p_arr_fields = array('participant' => null, 'sid' => null, 'name' => null, 'consent' => null, 'studynum' => null);
+
+      // Load Profile entity by User ID
+      $profile_entity = \Drupal::entityTypeManager()->getStorage('profile')->loadByProperties(['uid' => $userpageowner->id()]);
+
+      if (isset($profile_entity) && count($profile_entity) >0) {
+        foreach ($profile_entity as $p_entity) {
+//          kint($p_entity);
+
+          //Make sure we're only working with "Participant Info" profiles
+          //$profile_type = $p_entity->type->get(0)->get('target_id'); // Nope, it's protected
+          $profile_type = $p_entity->type->target_id;
+          if (isset($profile_type) && $profile_type == 'participant_info') {
+
+            //Get the 'field_signup_myself' value
+            $myselfval = $p_entity->get('field_signup_myself')->value;
+            $variables['signup_adult'] = $myselfval;
+            $participants[0] = $p_arr_fields;
+            $participants[0]['participant'] = $myselfval ? 'adult' : false;
+
+            //Get the 'field_signup_children' value
+            $numchildrenval = $p_entity->get('field_signup_num_children')->value;
+            $variables['signup_num_children'] = $numchildrenval;
+            if ($numchildrenval > 0) {
+              for ($i = 1; $i <= $numchildrenval; $i++) {
+                $participants[$i] = $p_arr_fields;
+                $participants[$i]['participant'] = 'child';
+              }
+            }
+          }
+        }
+      }
+
+      // Query the webform_submissions table to get all sids for the user
+      $subsstorage = \Drupal::entityTypeManager()->getStorage('webform_submission');
+      $variables['submissions_exist'] = $subsstorage->hasData();
+
+      //Get webform submissions for current userpageowner
+      $user_submissions = $subsstorage->loadByProperties(['uid' => $userpageowner->id()]);
+      $variables['user_submissions'] = $user_submissions;
+
+      //Loop through submissions and check the following:
+      //  A) Do they match the "sign-up" fields ("myself" & "num_children")
+      //  B) Do they have a 'Study Number' assigned yet
+
+      if (isset($user_submissions) && is_array($user_submissions) ){
+        foreach ($user_submissions as $submission) {
+          //kint($participants);
+          //kint($submission->getData());
+          $webformid = $submission->webform_id->target_id;
+          $sid = $submission->sid->value;
+          $subdata = $submission->getData();
+          //Determine if Consent has been given in the form of a digital signature
+          $sigconsent = $subdata['digital_signature_acceptance'];
+          $signature = $subdata['digital_signature'];
+          $consent = (isset($sigconsent) && $sigconsent == 1 && isset($signature)) ? TRUE : FALSE;
+          //Determine if a Study Number has been set
+          $studynumset = (isset($subdata['study_number']) && !empty($subdata['study_number'])) ? TRUE : FALSE;
+          //$studynum = _getParticipantWebformStudyNumber($sid);
+
+          if ($webformid == 'mnm_study_adult' && empty($participants[0]['sid'])) {
+            //This is a new Adult submission
+            $participants[0]['sid'] = $sid;
+            $participants[0]['name'] = $subdata['participant_name']['first'] . ' ' .$subdata['participant_name']['last'];;
+            $participants[0]['consent'] = $consent;
+            $participants[0]['studynum'] = $studynumset ? $subdata['study_number'] : null;
+            //$participants[0]['studynum'] = $studynum;
+          } elseif ($webformid == 'mnm_study_adult' && !empty($participants[0]['sid'])) {
+            //The Adult participant has already submitted a webform - no more are allowed
+            \Drupal::messenger()->addWarning('Detected multiple Adult form submissions. Only the first Adult submission will be accepted for this account.');
+          } elseif ($webformid == 'mnm_study_child') {
+            //This is a Child Study
+            //get the next available child slot in the $participants array
+            foreach ($participants as $index => $p) {
+              if ($p['participant'] == 'child' && empty($p['sid'])) {
+                //There is a child slot that has not been set with a webform submission yet - add it here
+                $participants[$index]['sid'] = $sid;
+                $participants[$index]['name'] = $subdata['participant_name']['first'] .' ' .$subdata['participant_name']['last'];;
+                $participants[$index]['consent'] = $consent;
+                $participants[$index]['studynum'] = $studynumset ? $subdata['study_number'] : null;
+                //$participants[$index]['studynum'] = $studynum;
+                break;
+              }
+            }
+          }
+
+        } //end foreach
+      }
+
+      //For each expected participant show the following:
+      //  - "myself" = is there an Adult webform submission? If so, show the SID & Name.
+      //  - "child_num" = show a row for each number, loop through submissions to get Child Webforms
+
+      //Populate the StudyNumForm with a field for each "Sign-Up" participant expected.
+
+      $variables['participants_array'] = $participants;
+
+      //Render the Participants Array into markup
+      $variables['participants_markup'] = _participantsMarkup($participants);
+
+    }
+  }  //END -- USER PAGE for PARTICIPANTS
+
+  return $variables;
+}
+
+///**
+// *  Get Webform Submission Study Number value
+// */
+//function _getParticipantWebformStudyNumber($sid) {
+//
+//  $submission = \Drupal\webform\WebformSubmissionInterface::load($sid);
+//  $subdata = $submission->getData();
+//  $studynumset = (isset($subdata['study_number']) && !empty($subdata['study_number'])) ? TRUE : FALSE;
+//  $studynum = $studynumset ? $subdata['study_number'] : null;
+//
+//  return $studynum;
+//}
