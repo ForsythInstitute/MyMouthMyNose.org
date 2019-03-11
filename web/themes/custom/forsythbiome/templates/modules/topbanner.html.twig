@@ -4,10 +4,13 @@
  * This section should display above the <header> element.
  */#}
 
+{# { dump() } #}
+
 {% if is_front %}
   <div class="top-banner">
     <div class="top-banner-wrapper">
-      <img class="full-width" src="/sites/default/files/images/hero/2018-03/forsyth_mmmn_home-1200x657.jpg" title="MyMouth, MyNose" alt="boy with magnifying glass">
+      <!--<img class="full-width" src="/sites/default/files/images/hero/2018-03/forsyth_mmmn_home-1200x657.jpg" title="MyMouth, MyNose" alt="boy with magnifying glass">-->
+      <img class="full-width" src="{{ public_files }}/images/hero/2018-03/forsyth_mmmn_home-1200x657.jpg" title="MyMouth, MyNose" alt="boy with magnifying glass">
       <div class="overlay"></div>
       <div class="top-banner-content">
 

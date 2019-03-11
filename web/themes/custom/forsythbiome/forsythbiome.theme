@@ -46,6 +46,9 @@ function forsythbiome_preprocess_node(&$variables) {
  */
 function forsythbiome_preprocess_page(&$variables) {
 
+  //Add value of public:// to twig variable
+  $variables['public_files'] = file_create_url("public://");
+
   $current_route = \Drupal::routeMatch();
   $route_request = $current_route->getRouteObject();
   $path_args = explode('/', $route_request->getPath());
