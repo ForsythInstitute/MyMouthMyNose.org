@@ -1,2 +1,35 @@
 // @file
 // Place your mixins here. Feel free to roll your own mixins.
+
+// This mixin enabled nested ordered lists to be displayed as
+// multi-level lists (1.1, 1.2, etc.)
+// See: https://gist.github.com/jirutka/32049196ab75547b7f47
+@mixin multi-level-ordered-list {
+  ol {
+    counter-reset: item;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    counter-increment: item;
+    display: table;
+    margin-bottom: .6em;
+  }
+
+  li::before {
+    content: counters(item, ".") ". ";
+    display: table-cell;
+    padding-right: 0.6em;
+  }
+
+  li li {
+    font-size: initial;
+    margin: 0;
+  }
+
+  li li::before {
+    content: counters(item, '.') ' ';
+  }
+}

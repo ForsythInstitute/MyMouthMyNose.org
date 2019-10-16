@@ -5,6 +5,33 @@
  * @todo Split this into multiple folders/files.
 */
 
+// Display the Contextual Links for admins at the top of the page.
+.contextual-region {
+  &.block-local-tasks-block {
+    top: 200px;
+    z-index: 11;
+  }
+  //position: absolute;
+  //width: 100%;
+  //top: -1px;
+  //right: 6px;
+  //float: none;
+  //clear: both;
+  //margin: 0;
+  //padding: 0.25em 0;
+  //text-align: left;
+  //white-space: nowrap;
+  //border: 1px solid #ccc;
+  //border-radius: 4px 0 4px 4px;
+  //background-color: #fff;
+}
+
+// Apply the "multi-level-ordered-list" mixin for ordered lists with the "multi" class
+ol.multi {
+  //color: green;
+  @include multi-level-ordered-list;
+}
+
 // A fix for https://www.drupal.org/node/953034 - Themes currently cannot
 // determine if a region is empty
 
@@ -31,6 +58,9 @@
 
 // Override styles from /core/modules/system/css/components/menu.theme.css
 
+.top-bar, .top-bar ul {
+  background-color: transparent;
+}
 .top-bar-section ul li {
     padding-top: 0;
     a.is-active {

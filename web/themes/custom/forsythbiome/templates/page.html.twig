@@ -72,47 +72,57 @@
       {% endif %}
 
       {# Display the Foundation top_bar if it exists #}
-      {% if top_bar %}
-        {{ top_bar }}
-      {% endif %}
+{#      {% if top_bar %}#}
+{#        {{ top_bar }}#}
+{#      {% endif %}#}
 
       {# Forsyth Site Header Twig Block #}
       {% block xy_siteheader %}
         {% set alt_header = FALSE %}
 
-      {% include '@forsythbiome/modules/topbanner.html.twig' %}
-
+{#      {% include '@forsythbiome/modules/topbanner.html.twig' %}#}
 
         <header class="l-header biome-header" role="banner" aria-label="{{ 'Site header'|t }}">
           <div class="header-inner-wrapper">
 
-            {% if linked_site_name or linked_logo or show_account_info %}
+{#            {% if linked_site_name or linked_logo or show_account_info %}#}
               <div class="grid-container">
 
                 <div class="grid-x grid-margin-x grid-margin-y">
 
                    {#Display Site Logo SVG #}
-                    <div class="cell small-10 medium-4">
-                      <div><a href="{{ front_page }}" class="margin-horizontal-1" title="Forsyth MyMouth, MyNose"><img src="/themes/custom/forsythbiome/images/mymmouthmynose_logo.svg"></a></div>
-                    </div>
+                    <div class="cell small-12 medium-4 large-4">
+                    <div><a href="{{ front_page }}" class="margin-horizontal-1" title="Forsyth MyMouth, MyNose"><img src="/themes/custom/forsythbiome/images/mymmouthmynose_logo.svg"></a></div>
+                  </div>
+
+                  {# Add Main Navigation Menu #}
+{#                  {% include '@forsythbiome/modules/topbanner.html.twig' %}#}
+
+                  <div class="cell small-12 medium-12 large-8">
 
                    {# Account Links in header #}
-                  {% if show_account_info %}
-                    <div class="cell small-12 medium-2 medium-offset-6">
-                      <div class="button-group small">
-                        {% if logged_in %}
-                          <a class="button" href="{{ path('user.page') }}">{{ 'My Account'|t }}</a>
-                          <a class="button clear" href="{{ path('user.logout') }}">{{ 'Sign Out'|t }}</a>
-                        {% else %}
-                          <a class="button" href="{{ path('user.login') }}">{{ 'Sign in'|t }}</a>
-                          <a class="button clear" href="{{ path('user.register') }}">{{ 'Sign Up'|t }}</a>
-                        {% endif %}
-                      </div>
+{#                  {% if show_account_info %}#}
+                    <div class="button-group small">
+                      {% if logged_in %}
+                        <a class="button" href="{{ path('user.page') }}">{{ 'My Account'|t }}</a>
+                        <a class="button clear" href="{{ path('user.logout') }}">{{ 'Sign Out'|t }}</a>
+                      {% else %}
+                        <a class="button" href="{{ path('user.login') }}">{{ 'Sign in'|t }}</a>
+                        <a class="button clear" href="{{ path('user.register') }}">{{ 'Sign Up'|t }}</a>
+                      {% endif %}
                     </div>
-                  {% endif %}
+
+                    <div id="main-menu-container">
+                      <h3>MAIN MENU GOES HERE</h3>
+                      <p>Call it explicitly instead as part of "page.header" below. But how?</p>
+
+                    </div>
+
+                  </div>
+{#                  {% endif %}#}
                 </div>
               </div>
-            {% endif %}
+{#            {% endif %}#}
 
             {# Add content displayed in the Page Header Region #}
             {% if page.header %}
@@ -128,6 +138,11 @@
 
           </div>
         </header>
+      {% endblock %}
+
+      {% block xy_hero_paragraph %}
+        <h2>Put Hero Paragraph Here Please</h2>
+
       {% endblock %}
 
       {#{% if page.top_banner %}#}

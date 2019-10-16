@@ -1,1 +1,10 @@
 // Non-modular or client styles for the .l-content region.
+
+// class="field-wrapper field field-paragraph--field-hero-image field-name-field-hero-image field-type-image field-label-hidden"
+// Hero Paragraph Styles
+
+.field-wrapper {
+  &.field-paragraph--field-hero-image {
+    width: 100%;
+  }
+}
