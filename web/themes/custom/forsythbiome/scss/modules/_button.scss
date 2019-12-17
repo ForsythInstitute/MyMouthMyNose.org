@@ -12,6 +12,15 @@
   font-family: 'Ubuntu', sans-serif;
   font-size: 15px;
   font-weight: bold;
+  &.success {
+    background-color: $button-background;
+    &:hover {
+      background-color: $button-background-hover;
+      border-bottom: 1px solid $button-background;
+      border-right: 1px solid $button-background;
+      color: $button-color-hover;
+    }
+  }
 
   &.clear {
     color: $white;

@@ -3,4 +3,10 @@
 footer {
   background-color: get-color(forsyth-grey);
   padding: 20px 0;
+
+  .menu {
+    a {
+      color: white;
+    }
+  }
 }

@@ -5,125 +5,407 @@
  * @todo Split this into multiple folders/files.
 */
 
-// Display the Contextual Links for admins at the top of the page.
-.contextual-region {
-  &.block-local-tasks-block {
-    top: 200px;
-    z-index: 11;
+  // Display the Contextual Links for admins at the top of the page.
+  .contextual-region {
+    &.block-local-tasks-block {
+      //top: 200px;
+      z-index: 11;
+    }
+    //position: absolute;
+    //width: 100%;
+    //top: -1px;
+    //right: 6px;
+    //float: none;
+    //clear: both;
+    //margin: 0;
+    //padding: 0.25em 0;
+    //text-align: left;
+    //white-space: nowrap;
+    //border: 1px solid #ccc;
+    //border-radius: 4px 0 4px 4px;
+    //background-color: #fff;
   }
-  //position: absolute;
-  //width: 100%;
-  //top: -1px;
-  //right: 6px;
-  //float: none;
-  //clear: both;
-  //margin: 0;
-  //padding: 0.25em 0;
-  //text-align: left;
-  //white-space: nowrap;
-  //border: 1px solid #ccc;
-  //border-radius: 4px 0 4px 4px;
-  //background-color: #fff;
+
+  // Apply the "multi-level-ordered-list" mixin for ordered lists with the "multi" class
+  ol.multi {
+    //color: green;
+    @include multi-level-ordered-list;
+  }
+
+
+  // Text color classes
+.text-black { color: black; }
+.text-red { color: #e32726; }
+
+  //Apply max-width to regular body text
+.inline-body-text {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  @media screen and (min-width: 40em) {
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
+}
+.inline-centered-text {
+  text-align: center;
+  margin-left: 4rem;
+  margin-right: 4rem;
 }
 
-// Apply the "multi-level-ordered-list" mixin for ordered lists with the "multi" class
-ol.multi {
-  //color: green;
-  @include multi-level-ordered-list;
+// General Purpose Containers
+.container-50 { width: 50px; }
+.container-100 { width: 100px; }
+.container-200 { width: 200px; }
+
+//Circle Numbers
+.paragraph-title { font-weight: bold; margin-bottom: 0; }
+.indent-30 { margin-left: 30px; }
+.circle:before {
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  margin-top: 5px;
 }
+.blue-1:before {content: "1"; background-color: blue; }
+.green-2:before { content: "2"; background-color: green; }
+.orange-3:before { content: "3"; background-color: orange; }
+.purple-4:before { content: "4"; background-color: purple; }
 
-// A fix for https://www.drupal.org/node/953034 - Themes currently cannot
-// determine if a region is empty
+  // A fix for https://www.drupal.org/node/953034 - Themes currently cannot
+  // determine if a region is empty
 
-.region-highlighted:empty {
+  .region-highlighted:empty {
     display: none;
-}
+  }
 
-// This has been an issue since 7.x, Foundation rules about list elements
-// affect Navbar sizing.
+  // This has been an issue since 7.x, Foundation rules about list elements
+  // affect Navbar sizing.
 
-.toolbar-tray a {
+  .toolbar-tray a {
     font-size: 13px;
-}
+  }
 
-// Remove Foundation's top margin from the toggle orientation button.
+  // Remove Foundation's top margin from the toggle orientation button.
 
-.toolbar .toolbar-toggle-orientation .toolbar-icon {
+  .toolbar .toolbar-toggle-orientation .toolbar-icon {
     margin: 0;
     // Fix offset problem where half of orientation button is not visible.
     &:before {
-        min-height: 0;
+      min-height: 0;
     }
-}
-
-// Override styles from /core/modules/system/css/components/menu.theme.css
-
-.top-bar, .top-bar ul {
-  background-color: transparent;
-}
-.top-bar-section ul li {
-    padding-top: 0;
-    a.is-active {
-        color: #FFFFFF;
-    }
-}
-
-// Preventing Top Bar FOUC
-// http://foundation.zurb.com/sites/docs/responsive-navigation.html#preventing-fouc
-// More info: https://www.drupal.org/node/2783573
-.no-js .top-bar {
-  display: none;
-}
-
-@media screen and (min-width: 40em) {
-  .no-js .top-bar {
-    display: block;
   }
-  .no-js .title-bar {
-    display: none;
-  }
-}
 
-// Offset the top bar if the Navbar (toolbar) is present.
+  // Offset the top bar if the Navbar (toolbar) is present.
 
-body.toolbar-fixed .sticky.is-stuck .top-bar {
+  body.toolbar-fixed .sticky.is-stuck .top-bar {
     margin-top: 39px;
-}
+  }
 
-body.toolbar-fixed.toolbar-horizontal.toolbar-tray-open .sticky.is-stuck .top-bar {
+  body.toolbar-fixed.toolbar-horizontal.toolbar-tray-open .sticky.is-stuck .top-bar {
     margin-top: 78px;
-}
+  }
 
-body.toolbar-fixed .sticky.is-stuck.is-at-top {
+  body.toolbar-fixed .sticky.is-stuck.is-at-top {
     margin-top: 0 !important;
-}
+  }
 
-// Removes core arrow image from menu items.
+  // Removes core arrow image from menu items.
 
-.top-bar {
+  .top-bar {
     .menu-item--collapsed,.menu-item--expanded {
-        list-style: none;
+      list-style: none;
     }
-}
+  }
 
 
-// Style the search form, if embedded in the Top Bar.
+  // Style the search form, if embedded in the Top Bar.
 
-.top-bar .search-block-form {
+  .top-bar .search-block-form {
     .form-item-keys, .form-actions {
-        display: inline-block;
+      display: inline-block;
     }
-}
+  }
 
-// Dropdown button styling.
+  // Dropdown button styling.
 
-.dropbutton-wrapper {
+  .dropbutton-wrapper {
     // Sub-themes will have to override this color, unfortunately.
     background-color: #008CBA;
     margin: 0 0 1.25rem;
     .button {
-        margin-bottom: 0;
-        width: 100%;
-        text-align: left;
+      margin-bottom: 0;
+      width: 100%;
+      text-align: left;
     }
+  }
+
+  //Page Title Styles
+  .block-page-title-block {
+    text-align: center;
+    margin: 2rem auto 0 auto;
+  }
+
+  //Drupal BODY Field styles
+  .field-name-body {
+    @include breakpoint(small only) {
+      padding: 1rem 2rem;
+      margin-left: 2rem;
+      margin-right: 2rem;
+    }
+    @media screen and (min-width: 40em) {
+      padding: 1rem 6rem;
+      margin-left: 2rem;
+      margin-right: 2rem;
+    }
+  }
+
+  // Drupal Paragraph Styles
+  .paragraph {
+    //by paragraph type
+    &.paragraph--type--front-page-hero {
+      width: 100%;
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: contain;
+      background-color: black;
+      margin-top: 150px;
+      @include breakpoint(xsmall) {
+        margin-top: 150px;
+      }
+      @include breakpoint(medium) {
+        margin-top: 100px;
+        background-size: cover;
+      }
+      @include breakpoint(xlarge up) {
+        margin-top: 0;
+      }
+      .field-paragraph--field-banner-details {
+        color: white;
+        &.mobile-only {
+          display: block;
+          padding-top: 220px;
+          background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1));
+          .cell {
+            padding: 0 1rem;
+          }
+        }
+        &.desktop-only {
+          display: none;
+        }
+        h2 {
+          color: white;
+          font-size: 1.6rem;
+          line-height: 1;
+          text-align: center;
+        }
+        .button-group.large {
+          .button {
+            font-size: 1.0rem;
+            margin: 0 auto;
+            min-width: 74px;
+          }
+        }
+        @include breakpoint(medium up) {
+          &.mobile-only {
+            display: none;
+          }
+          &.desktop-only {
+            display: block;
+            //height: 657px;
+            padding-top: 10em;
+            padding-left: 2em;
+          }
+          h2 {
+            font-size: 2.2rem;
+            text-align: unset;
+          }
+          .button-group.large {
+            .button {
+              font-size: 1.25rem;
+            }
+          }
+        }
+      }
+    }
+    &.paragraph--type--hero-banner {
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-size: contain;
+      background-color: black;
+      margin-top: 150px;
+      @include breakpoint(xsmall) {
+        margin-top: 150px;
+      }
+      @include breakpoint(medium) {
+        margin-top: 100px;
+        background-size: cover;
+      }
+      @include breakpoint(xlarge up) {
+        margin-top: 0;
+      }
+    }
+    &.paragraph--type--formatted-text {
+      padding: 1rem 0.5rem;
+      @media screen and (min-width: 40em) {
+        padding: 2rem 6rem;
+      }
+    }
+    &.paragraph--id--3,
+    &.paragraph--id--5 {
+      background-color: #f1f1f1;
+    }
+
+  } //END paragraph styles
+
+// User Page, Sign Up and Sign In page styles
+.path-user {
+  .block-system-main-block {
+    .user-login-form {
+      margin: 0 auto;
+      padding: 2rem;
+      max-width: 30rem;
+      .form-wrapper {
+        .form-submit {
+          display: block;
+          margin: 2em auto;
+        }
+      }
+    }
+    .user-register-form {
+      margin: 0 auto;
+      padding: 2rem;
+      max-width: 30rem;
+      .form-wrapper {
+        .form-submit {
+          display: block;
+          margin: 2em auto;
+        }
+      }
+    }
+    .user-pass {
+      margin: 0 auto;
+      padding: 2rem;
+      max-width: 30rem;
+      .form-wrapper {
+        .form-submit {
+          display: block;
+          margin: 2em auto;
+        }
+      }
+    }
+    .user-form {
+      margin: 0 auto;
+      padding: 2rem;
+      max-width: 30rem;
+      .form-wrapper {
+        .form-submit {
+          display: block;
+          margin: 2em auto;
+        }
+      }
+    }
+    .user-page-container {
+      width: 100%;
+      display: block;
+      .user-page-content {
+        max-width: 35%;
+        margin: 0 auto;
+        padding-bottom: 2rem;
+        .field-label-inline {
+          padding: 0.5rem 0;
+          .field-label {
+            float: left;
+            &:after {
+              padding: 0 0.5rem 0 0;
+              content: ":";
+            }
+          }
+          .field-items {
+            float: left;
+          }
+        }
+      }
+      .signup-form-link {
+        max-width: 35%;
+        margin: 0 auto;
+      }
+    }
+  }
+  .block-views-block-study-submissions-block-1 {
+    padding: 2rem;
+  }
+}
+
+// Main grid styles
+  .grid-container {
+    &.l-main {
+      padding-left: 0;
+      padding-right: 0;
+      max-width: none;
+    }
+    &.grid-top-padding {
+      padding-top: 1rem;
+    }
+    &.no-hero {
+      margin: 50px auto;
+    }
+    @media print, screen and (min-width: 40em) {
+    }
+  }
+
+
+/*
+ * Webform Styles
+ */
+.path-webform {
+  .form-wrapper {
+    .form-item-consent-text {
+      .consent-contents {
+        display: none;
+      }
+    }
+  }
+}
+@media print, screen and (min-width: 40em) {
+  .path-webform {
+    .form-wrapper {
+      padding-left: 6rem;
+      padding-right: 6rem;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+      .fieldgroup,
+      .form-item-participant-age,
+      .form-item-digital-signature {
+        padding: 0;
+        max-width: 40rem;
+      }
+      .form-item-consent-text {
+        .consent-contents {
+          display: block;
+          width:30%;
+          float: right;
+          padding: 1rem;
+          margin-left: 1rem;
+          color: $dark-gray;
+          background-color: #f1f1f1;
+          ul {
+            list-style-type: none;
+            li {
+              a {
+                color: $dark-gray;
+              }
+            }
+
+          }
+
+        }
+
+      }
+    }
+  }
 }

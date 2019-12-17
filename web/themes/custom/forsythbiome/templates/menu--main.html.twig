@@ -61,7 +61,7 @@
   {% if items %}
     {% if top_bar %}
       {% if menu_level == 0 %}
-        <ul{{ attributes.addClass('menu', 'vertical', 'medium-horizontal').setAttribute('data-responsive-menu', 'drilldown medium-dropdown') }}>
+        <ul{{ attributes.addClass('menu', 'vertical', 'medium-horizontal').setAttribute('data-responsive-menu', 'drilldown medium-dropdown').setAttribute('data-parent-link', 'true') }}>
       {% else %}
         <ul class="submenu menu vertical" data-submenu>
       {% endif %}
@@ -76,6 +76,7 @@
       {% if top_bar %}
         {%
           set item_classes = [
+            'main-menu-item',
             item.below is not empty ? 'has-submenu' ,
             item.is_expanded ? 'menu-item--expanded',
             item.is_collapsed ? 'menu-item--collapsed',

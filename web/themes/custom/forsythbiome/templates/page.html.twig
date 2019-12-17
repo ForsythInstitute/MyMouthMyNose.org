@@ -80,42 +80,35 @@
       {% block xy_siteheader %}
         {% set alt_header = FALSE %}
 
-{#      {% include '@forsythbiome/modules/topbanner.html.twig' %}#}
-
         <header class="l-header biome-header" role="banner" aria-label="{{ 'Site header'|t }}">
           <div class="header-inner-wrapper">
 
 {#            {% if linked_site_name or linked_logo or show_account_info %}#}
               <div class="grid-container">
 
-                <div class="grid-x grid-margin-x grid-margin-y">
+                <div class="grid-x grid-margin-x">
 
                    {#Display Site Logo SVG #}
                     <div class="cell small-12 medium-4 large-4">
-                    <div><a href="{{ front_page }}" class="margin-horizontal-1" title="Forsyth MyMouth, MyNose"><img src="/themes/custom/forsythbiome/images/mymmouthmynose_logo.svg"></a></div>
+                    <div class="header-logo"><a href="{{ front_page }}" class="margin-horizontal-1" title="Forsyth MyMouth, MyNose"><img src="/themes/custom/forsythbiome/images/mymmouthmynose_logo.svg"></a></div>
                   </div>
-
-                  {# Add Main Navigation Menu #}
-{#                  {% include '@forsythbiome/modules/topbanner.html.twig' %}#}
 
                   <div class="cell small-12 medium-12 large-8">
 
-                   {# Account Links in header #}
-{#                  {% if show_account_info %}#}
-                    <div class="button-group small">
-                      {% if logged_in %}
-                        <a class="button" href="{{ path('user.page') }}">{{ 'My Account'|t }}</a>
-                        <a class="button clear" href="{{ path('user.logout') }}">{{ 'Sign Out'|t }}</a>
-                      {% else %}
-                        <a class="button" href="{{ path('user.login') }}">{{ 'Sign in'|t }}</a>
-                        <a class="button clear" href="{{ path('user.register') }}">{{ 'Sign Up'|t }}</a>
-                      {% endif %}
-                    </div>
-
-                    <div id="main-menu-container">
-                      <h3>MAIN MENU GOES HERE</h3>
-                      <p>Call it explicitly instead as part of "page.header" below. But how?</p>
-
+                    <div id="main-menu-container" class="header-menu">
+                      {# Account Links in header #}
+                      <div class="button-group small">
+                        <div class="button-container">
+                          {% if logged_in %}
+                            <a class="button clear" href="{{ path('user.page') }}">{{ 'My Account'|t }}</a>
+                            <a class="button" href="{{ path('user.logout') }}">{{ 'Sign Out'|t }}</a>
+                          {% else %}
+                            <a class="button" href="{{ path('user.register') }}">{{ 'Sign Up'|t }}</a>
+                            <a class="button clear" href="{{ path('user.login') }}">{{ 'Sign in'|t }}</a>
+                          {% endif %}
+                        </div>
+                      </div>
+                      {{ drupal_block('system_menu_block:main') }}
                     </div>
 
                   </div>
@@ -129,7 +122,6 @@
               <div class="grid-container grid-container-padded">
                 <div class="grid-x">
                   <div class="medium-12 cell">
-                    {#<h4>This is the header region.</h4>#}
                     {{ page.header }}
                   </div>
                 </div>
@@ -140,20 +132,64 @@
         </header>
       {% endblock %}
 
-      {% block xy_hero_paragraph %}
-        <h2>Put Hero Paragraph Here Please</h2>
+      {# Background_Image module Region #}
+{#      <div class="l-background grid-container grid-container-padded">#}
+{#        <div class="grid-x">#}
+{#          <div class="medium-12 cell">#}
+{#            {% block background_image %}#}
+{#              {% if page.background_image %}#}
+{#                {{ page.background_image }}#}
+{#              {% endif %}#}
+{#            {% endblock %}#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
 
-      {% endblock %}
+      {# Page Banner (uses Paragraph field for Landing Page and Basic Page content types #}
+      {% if node.gettype == 'landing_page' %}
+        {% block xy_drupal_front_banner %}
+          {% if not (node.field_front_page_hero_paragraph.isEmpty == true) %}
+            {% for item in node.field_front_page_hero_paragraph %}
+              {{ drupal_entity('paragraph', item.target_id) }}
+            {% endfor %}
+          {% else %}
+            <div class="no-hero grid-container grid-container-padded">
+              <div class="grid-x"><div class="cell"><p>&nbsp;</p></div></div>
+            </div>
+          {% endif %}
+        {% endblock %}
+      {# Inner Page Hero Banner - displays on any page with a Hero Banner paragraph #}
+      {% elseif node.gettype == 'page' %}
+        {% block xy_drupal_banner %}
+{#          {% if not (node.field_hero_banner_paragraph.isEmpty == true) %}#}
+          {% if (node.hero_image) %}
+            {% for item in node.field_hero_banner_paragraph %}
+              {{ drupal_entity('paragraph', item.target_id) }}
+            {% endfor %}
+          {% else %}
+            <div class="no-hero grid-container grid-container-padded">
+              <div class="grid-x"><div class="cell"><p>&nbsp;</p></div></div>
+            </div>
+          {% endif %}
+        {% endblock %}
+      {% else %}
+        {% block xy_drupal_no_banner %}
+          <div class="no-hero grid-container grid-container-padded">
+            <div class="grid-x"><div class="cell"><p>&nbsp;</p></div></div>
+          </div>
+        {% endblock %}
+      {% endif %}
 
-      {#{% if page.top_banner %}#}
-        {#<div class="grid-container grid-container-padded">#}
-          {#<div class="grid-x">#}
-            {#<div class="medium-12 cell">#}
-              {#{{ page.top_banner }}#}
-            {#</div>#}
-          {#</div>#}
-        {#</div>#}
-      {#{% endif %}#}
+
+      {% if page.top_banner %}
+        <div class="grid-container grid-container-padded">
+          <div class="grid-x">
+            <div class="medium-12 cell">
+              {{ page.top_banner }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
 
       {# DRUPAL MESSAGES / HIGHLIGHTED REGION #}
       {% block xy_drupal_messages %}
@@ -186,15 +222,24 @@
             <a id="main-content"></a>
             {% if breadcrumb %} {{ breadcrumb }} {% endif %}
             <section>
-              {#<h4>PAGE CONTENT STARTS HERE</h4>#}
               {{ page.content }}
+            </section>
+            <section>
+{#              {{ kint() }}#}
+{#              {{ kint(page) }}#}
+{#              {{ kint(node.hero_image) }}#}
+{#              {{ kint(node.field_front_page_hero_paragraph) }}#}
+{#              {{ kint(node.field_hero_banner_paragraph) }}#}
+{#              {{ kint(node.gettype) }}#}
+{#              {{ kint(node.field_hero_banner_paragraph.isEmpty) }}#}
+{#              {{ kint(page.content) }}#}
             </section>
           </main>
         </div>
 
       </div>
 
-      {# FOOTE REGION #}
+      {# FOOTER REGION #}
       <footer class="l-footer">
         <div class="grid-x grid-container">
           <div class="">

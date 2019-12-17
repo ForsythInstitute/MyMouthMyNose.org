@@ -2,35 +2,168 @@
 
 header {
   &.biome-header {
-    background-color: $forsyth-red-transp;
+    background-color: rgba(227,39,38,1.0);
     font-size: initial;
     position: absolute;
     top: 0;
     width: 100%;
     z-index: 99;
-    @include breakpoint(medium up) {
-      padding: 20px 0;
+    padding: 12px 0 8px;
+    min-height: 150px;
+    @include breakpoint(medium) {
+      padding: 20px 0 0 0;
     }
-    @include breakpoint(small only) {
-      padding: 12px 0 8px;
+    @include breakpoint(large) {
+      min-height: 125px;
+    }
+    @include breakpoint(xlarge up) {
+      background-color: $forsyth-red-transp;
+      min-height: 100px;
     }
 
+    // Header Logo
+    .header-logo {
+      padding-top: 0.5rem;
+    }
+
+    // Sign-In/Sign-Up Button Group overrides
     .button-group {
+      width: 100%;
+      border-top: 1px solid $white;
+      justify-content: center;
+      margin-bottom: 0;
+      padding-top: 8px;
       @include breakpoint(medium up) {
+        justify-content: flex-end;
+        margin: 0 35px 0 0;
+        padding-right: 1rem;
+        border-top: none;
+      }
+      @include breakpoint(small xsmall) {
+      }
+    }
+
+    // Override styles from /core/modules/system/css/components/menu.theme.css
+
+    .title-bar {
+      background-color: transparent;
+    }
+
+    .top-bar {
+      padding: 0;
+      float: none;
+      background-color: transparent;
+      @media screen and (min-width: 40em) {
         float: right;
       }
-      @include breakpoint(small only) {
-        border-top: 1px solid $white;
-        justify-content: center;
-        margin-bottom: 0;
-        padding-top: 8px;
+
+      ul {
+        float: none;
+        background-color: transparent;
+        width: 100%;
+        //border: 1px solid white;
+        &.drilldown {
+          a {
+            background-color: #e32726;
+            color: white;
+          }
+        }
+        @media screen and (min-width: 40em) {
+          float: right;
+        }
       }
     }
 
-    #main-menu-container {
-      width: 100%;
-      float: left;
+    .top-bar-section ul li {
+      padding-top: 0;
+      a.is-active {
+        color: #FFFFFF;
+      }
+    }
+
+    // Preventing Top Bar FOUC
+    // http://foundation.zurb.com/sites/docs/responsive-navigation.html#preventing-fouc
+    // More info: https://www.drupal.org/node/2783573
+    .no-js .top-bar {
+      display: none;
+    }
+
+    @media screen and (min-width: 40em) {
+      .no-js {
+        .top-bar {
+          display: block;
+        }
+        .title-bar {
+          display: none;
+        }
+      }
+    }
+
+    // Main Navigation Menu overrides
+    //.dropdown.menu.medium-horizontal > li.is-dropdown-submenu-parent > a
+    //.dropdown.menu.medium-horizontal > li.is-dropdown-submenu-parent > a
+    //.dropdown.menu.medium-horizontal > li.is-dropdown-submenu-parent > a::after
+    .dropdown.menu {
+      &.medium-horizontal {
+        padding-top: 0.5rem;
+        > li {
+          background-color: transparent;
+          &:hover {
+            background-color: #FFAC2A;
+          }
+          a {
+            color: white;
+            //padding: 1rem;
+            padding: 0.6rem;
+            background-color: transparent;
+            &:hover {
+              //padding-bottom: 2rem;
+              color: black;
+            }
+            &.is-active {
+              background-color: #FFAC2A;
+              color: black;
+            }
+          }
+          &.is-dropdown-submenu-parent {
+            > a {
+              //padding: 0.5rem 0.5rem 2rem 0.5rem;
+              //margin-bottom: 0;
+              &:after {
+                border-color: transparent;
+              }
+              &:hover {
+                //color: black;
+                //background-color: #FFAC2A;
+              }
+            }
+          }
+          > .submenu {
+            &.is-dropdown-submenu {
+              background-color: #FFAC2A;
+              border: none;
+              min-width: fit-content;
+              > .is-dropdown-submenu-item {
+                a {
+                  color: black;
+                  padding: 1rem;
+                  border-bottom: 1px solid white;
+                  border-top: 1px solid white;
+                  &:hover {
+                    color: white;
+                  }
+                }
+                &:last-child {
+                  a {
+                    border: none;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 
-}
+} //end biome-header

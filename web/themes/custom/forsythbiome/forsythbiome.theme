@@ -7,45 +7,171 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\responsive_background_image\ResponsiveBackgroundImage;
+use Drupal\paragraphs\Entity\Paragraph;
 
 
 // Add your custom theme override functions here.
 
+
+/**
+ * Implements hook_preprocess_HOOK().
+ * @param $variables
+ */
+function forsythbiome_preprocess_page_title(&$variables) {
+
+  //Change Title of User Registration page to "Sign Up"
+  if (\Drupal::routeMatch()->getRouteName() == 'user.register') {
+    $variables['title'] = t('Sign Up');
+  }
+  if (\Drupal::routeMatch()->getRouteName() == 'user.login') {
+    $variables['title'] = t('Sign In');
+  }
+  if (\Drupal::routeMatch()->getRouteName() == 'user.pass') {
+    $variables['title'] = t('Reset Your Password');
+  }
+}
+
 /**
  * Implements hook_preprocess_block()
+ * @param $variables
  */
 function forsythbiome_preprocess_block(&$variables) {
 }
 
 /**
  * Implements template_preprocess_field().
+ * @param $variables
+ * @param $hook
  */
 function forsythbiome_preprocess_field(&$variables, $hook) {
 }
 
 /**
+ * Implements hook_preprocess_HOOK().
+ *
+ * Preprocess paragraph.html.twig.
+ * @param $variables
+ */
+ function forsythbiome_preprocess_paragraph(&$variables) {
+
+   $paragraph = $variables['paragraph'];
+   $paragraph_type = $paragraph->bundle();
+//   kint ($paragraph_type);
+
+   // Add a unique class based on entity ID to all Paragraphs.
+   // Ideally we should have a unique CSS selector with which to generate the media queries.
+   // Without a unique selector, you will not be able to have more than one instance
+   // of the Hero Paragraph on the same page with different background images on each.
+   $paragraph_id = $paragraph->id();
+   $css_class = 'paragraph--id--' . $paragraph_id;
+   $variables['attributes']['class'][] = $css_class;
+
+   switch ($paragraph_type) {
+
+     // Hero Paragraph.
+     case 'front_page_hero':
+       //Make sure the image field is not empty.
+       if (!empty($paragraph->get('field_hero_image')
+         ->getValue()[0]['target_id'])) {
+
+         // Construct a CSS selector string that points to the element on which a background image will be added.
+         // In this example, it is assumed that within my Paragraph template there is a div with the class 'hero__image'. Note that we do not have to render the background image in the template itself.
+         //$css_selector = '.' . $css_class . ' .hero__image';
+         $css_selector = '.' .$css_class;
+         //$css_selector = 'field-node--field-front-page-hero-paragraph';
+
+         // Here we call the method to generate media queries.
+         // We pass in the CSS selector string as described above.
+         // We pass in the entity object.
+         // We pass in the machine name of the image/media image field.
+         // We pass in the machine name of the Responsive Image Style.
+         // In this example, I have a Responsive Image Style called 'hero_paragraph'.
+         $style_tag = ResponsiveBackgroundImage::generateMediaQueries($css_selector, $paragraph, 'field_hero_image', 'frontpage_hero_image');
+//         $style_tag = ResponsiveBackgroundImage::generateMediaQueries($css_selector, $paragraph, 'field_frontpage_hero_media_image', 'frontpage_hero_image');
+
+         // We then check if the media queries were properly generated and attach them to the HTML head.
+         if ($style_tag) {
+           $variables['#attached']['html_head'][] = $style_tag;
+         }
+       };
+//       break;
+
+     // Hero Paragraph.
+     case 'hero_banner':
+       //Make sure the image field is not empty.
+       if (!empty($paragraph->get('field_hero_image')
+         ->getValue()[0]['target_id'])) {
+
+         $css_selector = '.' .$css_class;
+
+         $style_tag = ResponsiveBackgroundImage::generateMediaQueries($css_selector, $paragraph, 'field_hero_image', 'frontpage_hero_image');
+//         $style_tag = ResponsiveBackgroundImage::generateMediaQueries($css_selector, $paragraph, 'field_frontpage_hero_media_image', 'frontpage_hero_image');
+
+         // We then check if the media queries were properly generated and attach them to the HTML head.
+         if ($style_tag) {
+           $variables['#attached']['html_head'][] = $style_tag;
+         }
+       };
+       break;
+    }
+ }
+
+/**
  * Implements template_preprocess_html().
  *
  * Adds additional classes
+ * @param $variables
  */
 function forsythbiome_preprocess_html(&$variables) {
+
+  if (\Drupal::routeMatch()->getRouteName() == 'user.register') {
+    $variables['head_title']['title'] = t('New Title');
+  }
 }
 
 /**
  * Implements template_preprocess_node
  *
  * Add template suggestions and classes
+ * @param $variables
  */
 function forsythbiome_preprocess_node(&$variables) {
+
+  //For nodes with a Paragraph, check if field is populated.
+  $node = $variables['node'];
+  switch ($node->getType()) {
+    case 'page':
+      $hero_banner_paragraph = null;
+      $paragraph = $node->field_hero_banner_paragraph->getValue();
+      if (isset($paragraph)) {
+        $hero_image = null;
+        foreach ( $paragraph as $element ) {
+          $p = Paragraph::load( $element['target_id'] );
+          $hero_image = $p->field_hero_image->getValue();
+        }
+        if (!empty($hero_image)) {
+          \Drupal::logger('forsythbiome')->notice(var_export($hero_image,TRUE));
+          $node->hero_image = $hero_image;
+        } else {
+          $node->hero_image = false;
+        }
+        $variables['node'] = $node;
+      }
+      break;
+  }
+
 }
 
 /**
  * Implements template_preprocess_page
  *
  * Add convenience variables and template suggestions
+ * @param $variables
  */
 function forsythbiome_preprocess_page(&$variables) {
 
+//  kint($variables);
   //Add value of public:// to twig variable
   $variables['public_files'] = file_create_url("public://");
 
@@ -208,6 +334,8 @@ function forsythbiome_preprocess_page(&$variables) {
 
 /**
  * Implements template_preprocess_views_view().
+ *
+ * @param $variables
  */
 function forsythbiome_preprocess_views_view(&$variables) {}
 
@@ -232,6 +360,8 @@ function forsythbiome_theme_suggestions_user_alter(array &$suggestions, array &$
 
 /**
  * Implements template_preprocess_user().
+ *
+ * @param $variables
  */
 function forsythbiome_preprocess_user(&$variables) {
 
@@ -270,6 +400,8 @@ function _getProfilePageUser() {
 
 /**
  *  Take an array of Participants data and return markup to render in the template
+ *
+ * @param $participants
  */
 function _participantsMarkup($participants) {
 
@@ -355,6 +487,8 @@ function _participantsMarkup($participants) {
 
 /**
  * Build the Participants table output and store in $variables
+ *
+ * @param $variables
  */
 function _buildParticipantTable ($variables) {
 
