@@ -80,7 +80,21 @@
       {% block xy_siteheader %}
         {% set alt_header = FALSE %}
 
-        <header class="l-header biome-header" role="banner" aria-label="{{ 'Site header'|t }}">
+        {% if node.hero_image == false and not is_front %}
+          {% set heroclass = "no-hero-image" %}
+        {% else %}
+          {% set heroclass = "has-hero-image" %}
+        {% endif %}
+
+        {%
+          set headerclasses = [
+          'l-header',
+          'biome-header',
+          heroclass,
+        ]
+        %}
+
+        <header {{ attributes.addClass(headerclasses) }} role="banner" aria-label="{{ 'Site header'|t }}">
           <div class="header-inner-wrapper">
 
 {#            {% if linked_site_name or linked_logo or show_account_info %}#}
@@ -225,7 +239,7 @@
               {{ page.content }}
             </section>
             <section>
-{#              {{ kint() }}#}
+{#              {{ kint(attributes) }}#}
 {#              {{ kint(page) }}#}
 {#              {{ kint(node.hero_image) }}#}
 {#              {{ kint(node.field_front_page_hero_paragraph) }}#}

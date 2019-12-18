@@ -347,9 +347,12 @@
       padding-left: 0;
       padding-right: 0;
       max-width: none;
-    }
-    &.grid-top-padding {
-      padding-top: 1rem;
+      &.grid-container-padded {
+        padding: 1rem;
+      }
+      &.grid-top-padding {
+        padding-top: 1rem;
+      }
     }
     &.no-hero {
       margin: 50px auto;
@@ -409,3 +412,20 @@
     }
   }
 }
+
+// Styles for Contact Webform (.webform-submission-contact-form)
+.webform-submission-contact-form {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  @include breakpoint(medium) {
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .webform-button--submit.button.success {
+    margin: 0 auto;
+    width: 18rem;
+  }
+}
+
+

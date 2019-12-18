@@ -19,6 +19,9 @@ header {
     @include breakpoint(xlarge up) {
       background-color: $forsyth-red-transp;
       min-height: 100px;
+      &.no-hero-image {
+        background-color: rgba(227,39,38,1.0) !important;
+      }
     }
 
     // Header Logo

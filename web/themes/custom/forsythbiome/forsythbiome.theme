@@ -151,10 +151,12 @@ function forsythbiome_preprocess_node(&$variables) {
           $hero_image = $p->field_hero_image->getValue();
         }
         if (!empty($hero_image)) {
-          \Drupal::logger('forsythbiome')->notice(var_export($hero_image,TRUE));
+//          \Drupal::logger('forsythbiome')->notice(var_export($hero_image,TRUE));
           $node->hero_image = $hero_image;
+          $variables['attributes']['class'][] = 'has-hero-image';
         } else {
           $node->hero_image = false;
+          $variables['attributes']['class'][] = 'no-hero-image';
         }
         $variables['node'] = $node;
       }
